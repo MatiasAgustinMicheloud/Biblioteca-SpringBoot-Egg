@@ -98,6 +98,11 @@ public class LibroServicio {
             throw new MiException("El título no puede ser nulo o estar vacío.");
         }
 
+        Optional<Libro> libroexistente = libroRepositorio.findByTitulo(titulo);
+        if (libroexistente.isPresent()) {
+            throw new MiException("Ya existe un libro con ese titulo.");
+        }
+
         if (ejemplares == null || ejemplares < 0) {
             throw new MiException("La cantidad de ejemplares debe ser un número positivo.");
         }
