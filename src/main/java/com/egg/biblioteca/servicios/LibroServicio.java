@@ -90,16 +90,17 @@ public class LibroServicio {
             throw new MiException("El ISBN debe ser un número válido (mayor a cero).");
         }
 
-        if (libroRepositorio.existsById(isbn)) {
-            throw new MiException("Ya existe un libro con ese ISBN.");
+        Optional<Libro> libroExistente = libroRepositorio.findById(isbn);
+        if (libroExistente.isPresent() && !libroExistente.get().getIsbn().equals(isbn)) {
+            throw new MiException("Ya existe un libro con ese ISBN");
         }
 
         if (titulo == null || titulo.trim().isEmpty()) {
             throw new MiException("El título no puede ser nulo o estar vacío.");
         }
 
-        Optional<Libro> libroexistente = libroRepositorio.findByTitulo(titulo);
-        if (libroexistente.isPresent()) {
+        Optional<Libro> libroExistenteTitulo = libroRepositorio.findByTitulo(titulo);
+        if (libroExistenteTitulo.isPresent() && libroExistenteTitulo.get().getTitulo().equals(titulo)) {
             throw new MiException("Ya existe un libro con ese titulo.");
         }
 
@@ -114,6 +115,11 @@ public class LibroServicio {
         if (editorialId == null || !editorialRepositorio.existsById(editorialId)) {
             throw new MiException("La editorial no existe.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Libro getOne(Long id) {
+        return libroRepositorio.getReferenceById(id);
     }
 
 }

@@ -55,13 +55,18 @@ public class EditorialServicio {
             throw new MiException("El nombre no puede ser nulo o estar vacío!");
         }
 
-        if (!nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]*$")) {
-            throw new MiException("El nombre solo puede contener letras y espacios.");
+        if (!nombre.matches("^[0-9a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]*$")) {
+            throw new MiException("El nombre solo puede contener letras, números o espacios.");
         }
 
         Optional<Editorial> editorialExistente = editorialRepositorio.findByNombre(nombre);
         if (editorialExistente.isPresent()) {
             throw new MiException("Ya existe una editorial con ese nombre.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Editorial getOne(UUID id) {
+        return editorialRepositorio.getReferenceById(id);
     }
 }
